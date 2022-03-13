@@ -44,7 +44,11 @@ shinyUI(fluidPage(
                 inputId = "vac_dose",
                 label = "which does of vaccine you want to know?",
                 selected = "First Doses",
-                choices = c("Partially vaccinated", "Fully vaccinated", "Additional vaccinated")
+                choices = c(
+                    "Partially vaccinated",
+                    "Fully vaccinated",
+                    "Additional vaccinated"
+                )
             ),
             checkboxGroupInput(
                 inputId = "area",
@@ -69,7 +73,7 @@ shinyUI(fluidPage(
             )
         ),
         
-        mainPanel(plotlyOutput("time_series_vac"))
+        mainPanel(highchartOutput("time_series_vac"))
     )
     
     
