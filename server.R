@@ -26,6 +26,8 @@ vaccines <- read.csv(url(vaccines_link_1))
 
 
 
+
+
 # Define server logic
 shinyServer(function(input, output) {
     
@@ -80,19 +82,44 @@ shinyServer(function(input, output) {
             hc_title(text = paste(input$total_record, " by Province"))
     })
     
-    output$distPlot <- renderPlot({
-        # generate bins based on input$bins from ui.R
-        x    <- faithful[, 2]
-        bins <- seq(min(x), max(x), length.out = input$bins + 1)
+    output$time_series_vac <-  renderPlotly({
+        colnames(vaccines)[1] <- "date"
+        if(input$vac_dose == "Partially vaccinated"){
+            vaccines <- mutate(vaccines,dose = numtotal_partially)
+        }else if(input$vac_dose == "Fully vaccinated"){
+            vaccines <- mutate(vaccines,dose = numtotal_fully)
+        }else{
+            vaccines <- mutate(vaccines,dose = numtotal_additional)
+        }
         
-        # draw the histogram with the specified number of bins
-        hist(x,
-             breaks = bins,
-             col = 'darkgray',
-             border = 'white')
+        df_vac2 <- vaccines  %>%
+            mutate(date = lubridate::ymd(date)) %>%
+            select(c(
+                "date",
+                "prename",
+                "dose"
+            ))
         
+        if(length(input$area)>0){
+            df_vac2 <- df_vac2 %>%
+            filter(prename %in% input$area)
+        
+        plot <- df_vac2 %>%
+        ggplot(aes(date, dose))  +
+            geom_line(aes(group=prename, colour=prename))+ 
+            labs(title = paste("Total ", input$vac_dose, " by Province"),
+                 x = "Date",
+                 y = "Number of doses",
+                 color="Province name")
+        
+        require(scales)
+        plot + scale_x_continuous(labels = comma)
+        
+        our_plotly_plot <- ggplotly(plot)
+        return(our_plotly_plot)
+        }
     })
     
 })
 
-# shinyApp(ui = ui, server = server)
+
