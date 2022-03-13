@@ -1,5 +1,5 @@
 # STA2453-Project2
-Realtime COVID-19 dashboard: https://datasciencegenie.shinyapps.io/MyShinyApp
+Realtime COVID-19 dashboard: https://emzy013.github.io/STA2453-Project2/
 
 ## Data Source
 The data is from ...
