@@ -207,7 +207,7 @@ shinyServer(function(input, output) {
             ) %>%
             hc_title(
                 text = paste(
-                    "Vaccinated Percentage of ",
+                    "Vaccination Percentages of ",
                     input$age_group,
                     " in ",
                     input$area_percentage
