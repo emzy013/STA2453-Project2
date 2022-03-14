@@ -66,7 +66,7 @@ shinyServer(function(input, output) {
             summarise(
                 "Total Partially Vaccinated" = numtotal_partially,
                 "Total Fully Vaccinated" = numtotal_fully,
-                "Total Additional Vaccinated" = numtotal_additional
+                "Total Third-Dose Vaccinated" = numtotal_additional
             )
         
         if (input$total_record %in% c("Total Deaths", "Total Tests", "Total Cases")) {
@@ -197,7 +197,7 @@ shinyServer(function(input, output) {
                     y = proptotal_additional,
                     group = prename
                 ),
-                name  = "Fully Vaccinated with an Additional Dose"
+                name  = "Third-Dose Vaccinated"
             ) %>%
             hc_yAxis(
                 title = list(text = "Percentage"),
