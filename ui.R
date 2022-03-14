@@ -19,7 +19,7 @@ shinyUI(
   fluidPage(
     
     # Application title
-    titlePanel(div(HTML("<strong>Realtime COVID-19 Vaccine Dashboard</strong>"))),
+    titlePanel("Realtime COVID-19 Vaccination Status Dashboard"),
     
     fluidRow(
       style = "height: 30px; background-color: black;"
@@ -34,7 +34,7 @@ shinyUI(
       selectInput(
         inputId = "total_record",
         label = "Provincial summaries:",
-        selected = "Daily Cases",
+        selected = "Total Partially Vaccinated",
         choices = c(
           "Total Deaths",
           "Total Tests",
@@ -59,7 +59,7 @@ shinyUI(
       sidebarPanel(
         selectInput(
           inputId = "vac_dose",
-          label = "Which vaccination status do you want to see?",
+          label = "Vaccination status",
           selected = "Partially vaccinated",
           choices = c(
             "Partially Vaccinated",
