@@ -64,9 +64,9 @@ shinyServer(function(input, output) {
             group_by(prename) %>%
             mutate(prename = replace(prename, prename == "Quebec", "Québec")) %>%
             summarise(
-                "Total Partially vaccinated" = numtotal_partially,
-                "Total Fully vaccinated" = numtotal_fully,
-                "Total Additional vaccinated" = numtotal_additional
+                "Total Partially Vaccinated" = numtotal_partially,
+                "Total Fully Vaccinated" = numtotal_fully,
+                "Total Additional Vaccinated" = numtotal_additional
             )
         
         if (input$total_record %in% c("Total Deaths", "Total Tests", "Total Cases")) {
@@ -91,11 +91,11 @@ shinyServer(function(input, output) {
     
     output$time_series_vac <-  renderHighchart({
         colnames(vaccines)[1] <- "date"
-        if (input$vac_dose == "Partially vaccinated") {
+        if (input$vac_dose == "Partially Vaccinated") {
             vaccines <- mutate(vaccines, dose = numtotal_partially)
-        } else if (input$vac_dose == "At least 1 dose vaccinated") {
+        } else if (input$vac_dose == "At Least 1-Dose Vaccinated") {
             vaccines <- mutate(vaccines, dose = proptotal_atleast1dose)
-        } else if (input$vac_dose == "Fully vaccinated") {
+        } else if (input$vac_dose == "Fully Vaccinated") {
             vaccines <- mutate(vaccines, dose = numtotal_fully)
         } else{
             vaccines <- mutate(vaccines, dose = numtotal_additional)
@@ -128,9 +128,9 @@ shinyServer(function(input, output) {
     output$vac_percentage <-  renderHighchart({
         # colnames(vaccines)[1] <- "date"
         # vaccines$prop18plus_atleast1dose[vaccines$prop18plus_atleast1dose ==">=99"] <- "99"
-        if (input$age_group == "People") {
+        if (input$age_group == "Total Population") {
             temp <- vaccines
-        } else if (input$age_group == "People 18 and older") {
+        } else if (input$age_group == "Population 18 and older") {
             temp <- vaccines  %>%
                 mutate(
                     proptotal_atleast1dose = as.numeric(prop18plus_atleast1dose),
@@ -138,7 +138,7 @@ shinyServer(function(input, output) {
                     proptotal_fully = prop5plus_fully,
                     proptotal_additional = prop5plus_additional
                 )
-        } else if (input$age_group == "People 5 and older") {
+        } else if (input$age_group == "Population 5 and older") {
             temp <- vaccines  %>%
                 mutate(
                     proptotal_atleast1dose = prop5plus_atleast1dose,
@@ -172,7 +172,7 @@ shinyServer(function(input, output) {
                        y = proptotal_atleast1dose,
                        group = prename
                    ),
-                   name  = "At least 1 dose") %>%
+                   name  = "At Least 1 Dose") %>%
             hc_add_series(df_vac3,
                           "line",
                           hcaes(
@@ -180,7 +180,7 @@ shinyServer(function(input, output) {
                               y = proptotal_partially,
                               group = prename
                           ),
-                          name  = "Partially vaccinated") %>%
+                          name  = "Partially Vaccinated") %>%
             hc_add_series(df_vac3,
                           "line",
                           hcaes(
@@ -188,7 +188,7 @@ shinyServer(function(input, output) {
                               y = proptotal_fully,
                               group = prename
                           ),
-                          name  = "Fully vaccinated") %>%
+                          name  = "Fully Vaccinated") %>%
             hc_add_series(
                 df_vac3,
                 "line",
@@ -197,7 +197,7 @@ shinyServer(function(input, output) {
                     y = proptotal_additional,
                     group = prename
                 ),
-                name  = "Fully vaccinated with an additional dose"
+                name  = "Fully Vaccinated with an Additional Dose"
             ) %>%
             hc_yAxis(
                 title = list(text = "Percentage"),
@@ -207,7 +207,7 @@ shinyServer(function(input, output) {
             ) %>%
             hc_title(
                 text = paste(
-                    "vaccinated Percentage of ",
+                    "Vaccinated Percentage of ",
                     input$age_group,
                     " in ",
                     input$area_percentage

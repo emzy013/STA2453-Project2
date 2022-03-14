@@ -18,43 +18,43 @@ library(tidyverse)
 shinyUI(
     fluidPage(
         # Application title
-        titlePanel("Covide-19 data dashboard"),
-        
-        fluidRow(highchartOutput("canadaMap")),
+        titlePanel("Realtime COVID-19 Vaccine Dashboard"),
         
         fluidRow(
-            align = "center",
-            selectInput(
-                inputId = "total_record",
-                label = "Select the information you want to know.",
-                selected = "Daily Cases",
-                choices = c(
-                    "Total Deaths",
-                    "Total Tests",
-                    "Total Cases",
-                    "Total Partially vaccinated",
-                    "Total Fully vaccinated",
-                    "Total Additional vaccinated"
-                )
+          align = "center",
+          selectInput(
+            inputId = "total_record",
+            label = "Provincial summaries:",
+            selected = "Daily Cases",
+            choices = c(
+              "Total Deaths",
+              "Total Tests",
+              "Total Cases",
+              "Total Partially Vaccinated",
+              "Total Fully Vaccinated",
+              "Total Third-Dose Vaccinated"
             )
+          )
         ),
         
+        fluidRow(highchartOutput("canadaMap")),
+
         sidebarLayout(
             sidebarPanel(
                 selectInput(
                     inputId = "vac_dose",
-                    label = "which does of vaccine you want to know?",
-                    selected = "First Doses",
+                    label = "Which vaccination status do you want to see?",
+                    selected = "Partially vaccinated",
                     choices = c(
-                        "Partially vaccinated",
-                        "At least 1 dose vaccinated",
-                        "Fully vaccinated",
-                        "Additional vaccinated"
+                        "Partially Vaccinated",
+                        "At Least 1-Dose Vaccinated",
+                        "Fully Vaccinated",
+                        "Third-Dose Vaccinated"
                     )
                 ),
                 checkboxGroupInput(
                     inputId = "area",
-                    label = "show outcome plot",
+                    label = "Show for Area(s)",
                     selected = "Canada",
                     choices = c(
                         "Canada",
@@ -82,7 +82,7 @@ shinyUI(
             sidebarPanel(
                 selectInput(
                     inputId = "area_percentage",
-                    label = "Select province",
+                    label = "Select area",
                     selected = "Canada",
                     choices = c(
                         "Canada",
@@ -103,11 +103,11 @@ shinyUI(
                 ),
                 selectInput(
                     inputId = "age_group",
-                    label = "Select the by age",
+                    label = "Select age group",
                     selected = "People",
-                    choices = c("People",
-                                "People 18 and older",
-                                "People 5 and older")
+                    choices = c("Total Population",
+                                "Population 18 and older",
+                                "Population 5 and older")
                 )
             ),
             
