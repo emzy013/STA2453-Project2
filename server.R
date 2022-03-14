@@ -82,10 +82,11 @@ shinyServer(function(input, output) {
     })
     
     output$time_series_vac <-  renderHighchart({
-        #renderPlotly
         colnames(vaccines)[1] <- "date"
         if (input$vac_dose == "Partially vaccinated") {
             vaccines <- mutate(vaccines, dose = numtotal_partially)
+        } else if(input$vac_dose =="At least 1 dose vaccinated"){
+            vaccines <- mutate(vaccines, dose = proptotal_atleast1dose)
         } else if (input$vac_dose == "Fully vaccinated") {
             vaccines <- mutate(vaccines, dose = numtotal_fully)
         } else{
@@ -114,6 +115,57 @@ shinyServer(function(input, output) {
             
             return(plot)
         }
+    })
+    
+    output$vac_percentage <-  renderHighchart({
+        colnames(vaccines)[1] <- "date"
+        df_vac3 <- vaccines  %>%
+            mutate(date = lubridate::ymd(date)) %>%
+            select(c("date",
+                     "prename",
+                     "proptotal_atleast1dose",
+                     "proptotal_partially",
+                     "proptotal_fully",
+                     "proptotal_additional"))
+        
+        df_vac3 <- df_vac3 %>%
+            filter(prename == input$area_percentage)
+
+        plot <- df_vac3 %>%
+            hchart(., "line",
+                   hcaes(
+                       x = date,
+                       y = proptotal_atleast1dose,
+                       group = prename
+                   ),
+                   name  = "At least 1 dose") %>%
+            hc_add_series(df_vac3, "line",
+                          hcaes(
+                              x = date,
+                              y = proptotal_partially,
+                              group = prename
+                          ),
+                          name  = "Partially vaccinated") %>%
+            hc_add_series(df_vac3, "line",
+                          hcaes(
+                              x = date,
+                              y = proptotal_fully,
+                              group = prename
+                          ),
+                          name  = "Fully vaccinated") %>%
+            hc_add_series(df_vac3, "line",
+                          hcaes(
+                              x = date,
+                              y = proptotal_additional,
+                              group = prename),
+                          name  = "Fully vaccinated with an additional dose") %>%
+            hc_yAxis(
+                title=list(text = "Percentage"),
+                tickInterval=25,
+                min=0,
+                max=100) %>%
+            hc_title(text = paste("Percentage of vaccined in", input$area_percentage))
+        return(plot)
     })
     
 })

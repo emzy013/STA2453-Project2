@@ -46,6 +46,7 @@ shinyUI(fluidPage(
                 selected = "First Doses",
                 choices = c(
                     "Partially vaccinated",
+                    "At least 1 dose vaccinated", 
                     "Fully vaccinated",
                     "Additional vaccinated"
                 )
@@ -74,7 +75,38 @@ shinyUI(fluidPage(
         ),
         
         mainPanel(highchartOutput("time_series_vac"))
-    )
+    ),
+    
+    sidebarLayout(
+        sidebarPanel(
+            selectInput(
+                inputId = "area_percentage",
+                label = "show outcome plot",
+                selected = "Canada",
+                choices = c(
+                    "Canada",
+                    "British Columbia",
+                    "Alberta",
+                    "Saskatchewan",
+                    "Manitoba",
+                    "Ontario",
+                    "Quebec",
+                    "New Brunswick",
+                    "Nova Scotia",
+                    "Newfoundland and Labrador",
+                    "Prince Edward Island",
+                    "Yukon",
+                    "Northwest Territories",
+                    "Nunavut"
+                )
+            )
+        ),
+        
+        mainPanel(highchartOutput("vac_percentage"))
+    ),
+    
+    #fluidRow(plotlyOutput("vac_percentage"))
+    # fluidRow(highchartOutput("vac_percentage")),
     
     
 ))
