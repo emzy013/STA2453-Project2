@@ -1,5 +1,6 @@
 # STA2453-Project2
 You can access the realtime COVID-19 dashboard here: https://emzy.shinyapps.io/STA2453-Project2-main/ 
+
 Note that the graphs may take a few seconds to load initially.
 
 ## Data Source
