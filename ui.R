@@ -54,7 +54,7 @@ shinyUI(
                 ),
                 checkboxGroupInput(
                     inputId = "area",
-                    label = "Show for Area(s)",
+                    label = "Show for area(s)",
                     selected = "Canada",
                     choices = c(
                         "Canada",
