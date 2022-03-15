@@ -23,7 +23,7 @@ full_cases <- read.csv(url(cases_link_1))
 vaccines_link_1 <-
     "https://health-infobase.canada.ca/src/data/covidLive/vaccination-coverage-map.csv"
 vaccines <- read.csv(url(vaccines_link_1))
-colnames(vaccines)[1] <- "date"
+colnames(vaccines)[1] <- "Date"
 vaccines$prop18plus_atleast1dose[vaccines$prop18plus_atleast1dose == ">=99"] <-
     "99"
 
@@ -95,7 +95,7 @@ shinyServer(function(session, input, output) {
     })
     
     output$time_series_vac <-  renderHighchart({
-        colnames(vaccines)[1] <- "date"
+        colnames(vaccines)[1] <- "Date"
         if(input$vac_option == "Population count"){
             if (input$vac_dose == "Partially Vaccinated") {
                 vaccines <- mutate(vaccines, dose = numtotal_partially)
@@ -120,8 +120,8 @@ shinyServer(function(session, input, output) {
 
         
         df_vac2 <- vaccines  %>%
-            mutate(date = lubridate::ymd(date)) %>%
-            select(c("date",
+            mutate(Date = lubridate::ymd(Date)) %>%
+            select(c("Date",
                      "prename",
                      "dose"))
         
@@ -133,7 +133,7 @@ shinyServer(function(session, input, output) {
             plot <- df_vac2 %>%
                 hchart(., "line",
                        hcaes(
-                           x = date,
+                           x = Date,
                            y = dose,
                            group = prename
                        )) %>%
@@ -168,10 +168,10 @@ shinyServer(function(session, input, output) {
         }
         
         df_vac3 <- temp  %>%
-            mutate(date = lubridate::ymd(date)) %>%
+            mutate(Date = lubridate::ymd(Date)) %>%
             select(
                 c(
-                    "date",
+                    "Date",
                     "prename",
                     "proptotal_atleast1dose",
                     "proptotal_partially",
@@ -187,7 +187,7 @@ shinyServer(function(session, input, output) {
             hchart(.,
                    "line",
                    hcaes(
-                       x = date,
+                       x = Date,
                        y = proptotal_atleast1dose,
                        group = prename
                    ),
@@ -195,7 +195,7 @@ shinyServer(function(session, input, output) {
             hc_add_series(df_vac3,
                           "line",
                           hcaes(
-                              x = date,
+                              x = Date,
                               y = proptotal_partially,
                               group = prename
                           ),
@@ -203,7 +203,7 @@ shinyServer(function(session, input, output) {
             hc_add_series(df_vac3,
                           "line",
                           hcaes(
-                              x = date,
+                              x = Date,
                               y = proptotal_fully,
                               group = prename
                           ),
@@ -212,7 +212,7 @@ shinyServer(function(session, input, output) {
                 df_vac3,
                 "line",
                 hcaes(
-                    x = date,
+                    x = Date,
                     y = proptotal_additional,
                     group = prename
                 ),
