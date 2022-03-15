@@ -54,6 +54,22 @@ shinyUI(
       style = "height: 20px; background-color: #ededed;"
     ),
     br(),
+    h2("Summary of Vaccination status in Canada",  align = "center"),
+    fluidRow(
+      align="center",
+      column(3,valueBoxOutput("at_least_one_dose")),
+      column(3,valueBoxOutput("total_partially")),
+      column(3,valueBoxOutput("total_fully")),
+      column(3,valueBoxOutput("total_additional"))
+    ), 
+    fluidRow(
+      style = "height: 20px; background-color: #ededed;"
+    ),
+    br(),
+    
+    
+    h2("Vaccination status by province",  align = "center"),
+    br(),
     
     sidebarLayout(
       sidebarPanel(
@@ -66,6 +82,15 @@ shinyUI(
             "At Least 1-Dose Vaccinated",
             "Fully Vaccinated",
             "Third-Dose Vaccinated"
+          )
+        ),
+        selectInput(
+          inputId = "vac_option",
+          label = "Select measure methods",
+          selected = "Number doses",
+          choices = c(
+            "Number doses",
+            "Population percentage"
           )
         ),
         checkboxGroupInput(
@@ -136,6 +161,8 @@ shinyUI(
     fluidRow(
       style = "height: 20px; background-color: #ededed;"
     ),
+    br(),
+    h2("Cases by vaccination status",  align = "center"),
     br(),
     
     fluidRow(

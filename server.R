@@ -27,6 +27,11 @@ colnames(vaccines)[1] <- "date"
 vaccines$prop18plus_atleast1dose[vaccines$prop18plus_atleast1dose == ">=99"] <-
     "99"
 
+total_vac <- vaccines %>%
+    tail(., n=14) %>%
+    filter(prename == "Canada")
+
+
 vaccines_link_2 <-
     "https://health-infobase.canada.ca/src/data/covidLive/covid19-epiSummary-casesAfterVaccination.csv"
 vaccines2 <- read.csv(url(vaccines_link_2)) %>%
@@ -37,7 +42,7 @@ vaccines2 <- read.csv(url(vaccines_link_2)) %>%
 
 
 # Define server logic
-shinyServer(function(input, output) {
+shinyServer(function(session, input, output) {
     output$canadaMap <- renderHighchart({
         df_cases <- full_cases %>%
             select(c("prname", "numdeathstoday", "numtests", "numtoday")) %>%
@@ -91,15 +96,28 @@ shinyServer(function(input, output) {
     
     output$time_series_vac <-  renderHighchart({
         colnames(vaccines)[1] <- "date"
-        if (input$vac_dose == "Partially Vaccinated") {
-            vaccines <- mutate(vaccines, dose = numtotal_partially)
-        } else if (input$vac_dose == "At Least 1-Dose Vaccinated") {
-            vaccines <- mutate(vaccines, dose = proptotal_atleast1dose)
-        } else if (input$vac_dose == "Fully Vaccinated") {
-            vaccines <- mutate(vaccines, dose = numtotal_fully)
-        } else{
-            vaccines <- mutate(vaccines, dose = numtotal_additional)
+        if(input$vac_option == "Number doses"){
+            if (input$vac_dose == "Partially Vaccinated") {
+                vaccines <- mutate(vaccines, dose = numtotal_partially)
+            } else if (input$vac_dose == "At Least 1-Dose Vaccinated") {
+                vaccines <- mutate(vaccines, dose = numtotal_atleast1dose)
+            } else if (input$vac_dose == "Fully Vaccinated") {
+                vaccines <- mutate(vaccines, dose = numtotal_fully)
+            } else{
+                vaccines <- mutate(vaccines, dose = numtotal_additional)
+            }
+        }else{
+            if (input$vac_dose == "Partially Vaccinated") {
+                vaccines <- mutate(vaccines, dose = proptotal_partially)
+            } else if (input$vac_dose == "At Least 1-Dose Vaccinated") {
+                vaccines <- mutate(vaccines, dose = proptotal_atleast1dose)
+            } else if (input$vac_dose == "Fully Vaccinated") {
+                vaccines <- mutate(vaccines, dose = proptotal_fully)
+            } else{
+                vaccines <- mutate(vaccines, dose = proptotal_additional)
+            }
         }
+
         
         df_vac2 <- vaccines  %>%
             mutate(date = lubridate::ymd(date)) %>%
@@ -119,6 +137,9 @@ shinyServer(function(input, output) {
                            y = dose,
                            group = prename
                        )) %>%
+                hc_yAxis(
+                    title = list(text = input$vac_option)
+                ) %>%
                 hc_title(text = paste("Total ", input$vac_dose, " by Province"))
             
             return(plot)
@@ -126,8 +147,6 @@ shinyServer(function(input, output) {
     })
     
     output$vac_percentage <-  renderHighchart({
-        # colnames(vaccines)[1] <- "date"
-        # vaccines$prop18plus_atleast1dose[vaccines$prop18plus_atleast1dose ==">=99"] <- "99"
         if (input$age_group == "Total Population") {
             temp <- vaccines
         } else if (input$age_group == "Population 18 and older") {
@@ -220,7 +239,7 @@ shinyServer(function(input, output) {
     output$case_after_vac <-  renderHighchart({
         plot <- vaccines2 %>%
             hchart("pie", hcaes(x = "label.en", y = "prop_cases"),
-                   name = "Number of Cases") %>%
+                   name = "Cases Percentage") %>%
             hc_title(text = "Cases")
         
         return(plot)
@@ -230,7 +249,7 @@ shinyServer(function(input, output) {
         plot <- vaccines2 %>%
             hchart("pie",
                    hcaes(x = "label.en", y = "prop_hospitalizations"),
-                   name = "Number of Cases") %>%
+                   name = "Hospitalizations Percentage") %>%
             hc_title(text = "Hospitalizations")
         
         return(plot)
@@ -239,12 +258,39 @@ shinyServer(function(input, output) {
     output$case_after_vac3 <-  renderHighchart({
         plot <- vaccines2 %>%
             hchart("pie", hcaes(x = "label.en", y = "prop_deaths"),
-                   name = "Number of Cases") %>%
+                   name = "Deaths Percentage") %>%
             hc_title(text = "Deaths")
         
         return(plot)
     })
     
     
+    output$at_least_one_dose <- renderValueBox({
+        valueBox(
+            total_vac$numtotal_atleast1dose[1], 
+            "At Least 1-Dose Vaccinated", 
+        )
+    })
+    
+    output$total_partially <- renderValueBox({
+        valueBox(
+            total_vac$numtotal_partially[1], 
+            "Partially Vaccinated", 
+        )
+    })
+    
+    output$total_fully <- renderValueBox({
+        valueBox(
+            total_vac$numtotal_fully[1], 
+            "Fully Vaccinated", 
+        )
+    })
+    
+    output$total_additional <- renderValueBox({
+        valueBox(
+            total_vac$numtotal_additional[1], 
+            "Third-Dose Vaccinated", 
+        )
+    })
     
 })
