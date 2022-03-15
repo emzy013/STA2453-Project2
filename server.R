@@ -96,26 +96,14 @@ shinyServer(function(session, input, output) {
     
     output$time_series_vac <-  renderHighchart({
         colnames(vaccines)[1] <- "date"
-        if(input$vac_option == "Number doses"){
-            if (input$vac_dose == "Partially Vaccinated") {
-                vaccines <- mutate(vaccines, dose = numtotal_partially)
-            } else if (input$vac_dose == "At Least 1-Dose Vaccinated") {
-                vaccines <- mutate(vaccines, dose = numtotal_atleast1dose)
-            } else if (input$vac_dose == "Fully Vaccinated") {
-                vaccines <- mutate(vaccines, dose = numtotal_fully)
-            } else{
-                vaccines <- mutate(vaccines, dose = numtotal_additional)
-            }
-        }else{
-            if (input$vac_dose == "Partially Vaccinated") {
-                vaccines <- mutate(vaccines, dose = proptotal_partially)
-            } else if (input$vac_dose == "At Least 1-Dose Vaccinated") {
-                vaccines <- mutate(vaccines, dose = proptotal_atleast1dose)
-            } else if (input$vac_dose == "Fully Vaccinated") {
-                vaccines <- mutate(vaccines, dose = proptotal_fully)
-            } else{
-                vaccines <- mutate(vaccines, dose = proptotal_additional)
-            }
+        if (input$vac_dose == "Partially Vaccinated") {
+            vaccines <- mutate(vaccines, dose = numtotal_partially)
+        } else if (input$vac_dose == "At Least 1-Dose Vaccinated") {
+            vaccines <- mutate(vaccines, dose = numtotal_atleast1dose)
+        } else if (input$vac_dose == "Fully Vaccinated") {
+            vaccines <- mutate(vaccines, dose = numtotal_fully)
+        } else{
+            vaccines <- mutate(vaccines, dose = numtotal_additional)
         }
 
         

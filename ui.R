@@ -81,15 +81,6 @@ shinyUI(
             "Third-Dose Vaccinated"
           )
         ),
-        selectInput(
-          inputId = "vac_option",
-          label = "Select measure methods",
-          selected = "Number doses",
-          choices = c(
-            "Number doses",
-            "Population percentage"
-          )
-        ),
         checkboxGroupInput(
           inputId = "area",
           label = "Show for area(s)",
