@@ -10,36 +10,47 @@
 library(shiny)
 library(shinydashboard)
 library(highcharter)
-library(plotly)
-library(ggplot2)
 library(tidyverse)
 
-# Define UI for application that draws a histogram
+# Define UI for application
 shinyUI(
   fluidPage(
-    
     # Application title
     titlePanel("Realtime COVID-19 Vaccination Status Dashboard"),
     
-    fluidRow(
-      style = "height: 30px; background-color: black;"
-    ),
-    fluidRow(
-      style = "height: 20px; background-color: #ededed;"
-    ),
+    fluidRow(style = "height: 30px; background-color: black;"),
+    fluidRow(style = "height: 20px; background-color: #ededed;"),
     br(),
     
     h2("Summary of Vaccination status in Canada",  align = "center"),
     fluidRow(
-      column(3, style = "height: 100px; background-color: #d9f1ff;", align = "center", valueBoxOutput("at_least_one_dose", width = NULL)),
-      column(3, style = "height: 100px; background-color: #e8ffff;", align = "center", valueBoxOutput("total_partially", width = NULL)),
-      column(3, style = "height: 100px; background-color: #d9f1ff;", align = "center", valueBoxOutput("total_fully", width = NULL)),
-      column(3, style = "height: 100px; background-color: #e8ffff;", align = "center", valueBoxOutput("total_additional", width = NULL))
-    ), 
-    
-    fluidRow(
-      style = "height: 20px; background-color: #ededed;"
+      column(
+        3,
+        style = "height: 100px; background-color: #d9f1ff;",
+        align = "center",
+        valueBoxOutput("at_least_one_dose", width = NULL)
+      ),
+      column(
+        3,
+        style = "height: 100px; background-color: #e8ffff;",
+        align = "center",
+        valueBoxOutput("total_partially", width = NULL)
+      ),
+      column(
+        3,
+        style = "height: 100px; background-color: #d9f1ff;",
+        align = "center",
+        valueBoxOutput("total_fully", width = NULL)
+      ),
+      column(
+        3,
+        style = "height: 100px; background-color: #e8ffff;",
+        align = "center",
+        valueBoxOutput("total_additional", width = NULL)
+      )
     ),
+    
+    fluidRow(style = "height: 20px; background-color: #ededed;"),
     br(),
     
     fluidRow(
@@ -47,7 +58,7 @@ shinyUI(
       selectInput(
         inputId = "total_record",
         label = "Provincial summaries:",
-        selected = "Total Partially Vaccinated",
+        selected = "Total Fully Vaccinated",
         choices = c(
           "Total Deaths",
           "Total Tests",
@@ -59,13 +70,9 @@ shinyUI(
       )
     ),
     
-    fluidRow(
-      highchartOutput("canadaMap")
-    ),
+    fluidRow(highchartOutput("canadaMap")),
     
-    fluidRow(
-      style = "height: 20px; background-color: #ededed;"
-    ),
+    fluidRow(style = "height: 20px; background-color: #ededed;"),
     br(),
     
     sidebarLayout(
@@ -85,10 +92,8 @@ shinyUI(
           inputId = "vac_option",
           label = "Measurement method",
           selected = "Population Count",
-          choices = c(
-            "Population Count",
-            "Population Percentage"
-          )
+          choices = c("Population Count",
+                      "Population Percentage")
         ),
         checkboxGroupInput(
           inputId = "area",
@@ -115,9 +120,7 @@ shinyUI(
       mainPanel(highchartOutput("time_series_vac"))
     ),
     
-    fluidRow(
-      style = "height: 20px; background-color: #ededed;"
-    ),
+    fluidRow(style = "height: 20px; background-color: #ededed;"),
     br(),
     
     sidebarLayout(
@@ -147,17 +150,17 @@ shinyUI(
           inputId = "age_group",
           label = "Select age group",
           selected = "People",
-          choices = c("Total Population",
-                      "Population 18 and older",
-                      "Population 5 and older")
+          choices = c(
+            "Total Population",
+            "Population 18 and older",
+            "Population 5 and older"
+          )
         )
       ),
       mainPanel(highchartOutput("vac_percentage"))
     ),
     
-    fluidRow(
-      style = "height: 20px; background-color: #ededed;"
-    ),
+    fluidRow(style = "height: 20px; background-color: #ededed;"),
     br(),
     h2("Cases by Vaccination Status",  align = "center"),
     br(),

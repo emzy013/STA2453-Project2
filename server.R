@@ -10,8 +10,6 @@
 library(shiny)
 library(shinydashboard)
 library(highcharter)
-library(plotly)
-library(ggplot2)
 library(tidyverse)
 
 
@@ -28,7 +26,7 @@ vaccines$prop18plus_atleast1dose[vaccines$prop18plus_atleast1dose == ">=99"] <-
     "99"
 
 total_vac <- vaccines %>%
-    tail(., n=14) %>%
+    tail(., n = 14) %>%
     filter(prename == "Canada")
 
 
@@ -43,21 +41,23 @@ vaccines2 <- read.csv(url(vaccines_link_2)) %>%
 
 # Define server logic
 shinyServer(function(session, input, output) {
+    
+    #Provincial Summary Map
     output$canadaMap <- renderHighchart({
         df_cases <- full_cases %>%
             select(c("prname", "numdeathstoday", "numtests", "numtoday")) %>%
             group_by(prname) %>%
             mutate(prname = replace(prname, prname == "Quebec", "Québec")) %>%
+            dplyr::filter(prname != "Repatriated travellers" &&
+                              prname != "Canada") %>%
             summarise(
                 "Total Deaths" = sum(numdeathstoday),
                 "Total Tests" = sum(numtests),
                 "Total Cases" = sum(numtoday)
-            )  %>%
-            dplyr::filter(prname != "Repatriated travellers" &&
-                              prname != "Canada")
+            )
         
         df_vac <- vaccines  %>%
-            tail(., n = 13) %>%
+            tail(., n = 14) %>%
             select(
                 c(
                     "prename",
@@ -88,15 +88,16 @@ shinyServer(function(session, input, output) {
             value = input$total_record,
             name =  input$total_record,
             joinBy = join_name,
-            dataLabels = list(enabled = TRUE, format = "{point.name}"),
-            showInLegend = F
+            showInLegend = F,
+            dataLabels = list(enabled = TRUE, format = "{point.name}")
         ) %>%
             hc_title(text = paste(input$total_record, " by Province"))
     })
     
+    #Provincial Comparison Time Series Chart
     output$time_series_vac <-  renderHighchart({
         colnames(vaccines)[1] <- "Date"
-        if(input$vac_option == "Population Count"){
+        if (input$vac_option == "Population Count") {
             if (input$vac_dose == "Partially Vaccinated") {
                 vaccines <- mutate(vaccines, dose = numtotal_partially)
             } else if (input$vac_dose == "At Least 1-Dose Vaccinated") {
@@ -106,7 +107,7 @@ shinyServer(function(session, input, output) {
             } else{
                 vaccines <- mutate(vaccines, dose = numtotal_additional)
             }
-        }else{
+        } else{
             if (input$vac_dose == "Partially Vaccinated") {
                 vaccines <- mutate(vaccines, dose = proptotal_partially)
             } else if (input$vac_dose == "At Least 1-Dose Vaccinated") {
@@ -117,7 +118,7 @@ shinyServer(function(session, input, output) {
                 vaccines <- mutate(vaccines, dose = proptotal_additional)
             }
         }
-
+        
         
         df_vac2 <- vaccines  %>%
             mutate(Date = lubridate::ymd(Date)) %>%
@@ -137,15 +138,14 @@ shinyServer(function(session, input, output) {
                            y = dose,
                            group = prename
                        )) %>%
-                hc_yAxis(
-                    title = list(text = input$vac_option)
-                ) %>%
+                hc_yAxis(title = list(text = input$vac_option)) %>%
                 hc_title(text = paste("Total ", input$vac_dose, " by Province"))
             
             return(plot)
         }
     })
     
+    #Vaccination Percentages Time Series Chart
     output$vac_percentage <-  renderHighchart({
         if (input$age_group == "Total Population") {
             temp <- vaccines
@@ -235,7 +235,7 @@ shinyServer(function(session, input, output) {
         return(plot)
     })
     
-    
+    #Pie Charts by Vaccination Status
     output$case_after_vac <-  renderHighchart({
         plot <- vaccines2 %>%
             hchart("pie", hcaes(x = "label.en", y = "prop_cases"),
@@ -265,31 +265,27 @@ shinyServer(function(session, input, output) {
     })
     
     
+    #Summary of Vaccination status in Canada
     output$at_least_one_dose <- renderValueBox({
-        valueBox(
-            total_vac$numtotal_atleast1dose[1], 
-            "At Least 1-Dose Vaccinated", 
+        valueBox(total_vac$numtotal_atleast1dose[1],
+                 "At Least 1-Dose Vaccinated",
         )
     })
     
     output$total_partially <- renderValueBox({
-        valueBox(
-            total_vac$numtotal_partially[1], 
-            "Partially Vaccinated", 
+        valueBox(total_vac$numtotal_partially[1],
+                 "Partially Vaccinated",
         )
     })
     
     output$total_fully <- renderValueBox({
-        valueBox(
-            total_vac$numtotal_fully[1], 
-            "Fully Vaccinated", 
-        )
+        valueBox(total_vac$numtotal_fully[1],
+                 "Fully Vaccinated", )
     })
     
     output$total_additional <- renderValueBox({
-        valueBox(
-            total_vac$numtotal_additional[1], 
-            "Third-Dose Vaccinated", 
+        valueBox(total_vac$numtotal_additional[1],
+                 "Third-Dose Vaccinated",
         )
     })
     
