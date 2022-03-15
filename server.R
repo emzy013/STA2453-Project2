@@ -96,7 +96,7 @@ shinyServer(function(session, input, output) {
     
     output$time_series_vac <-  renderHighchart({
         colnames(vaccines)[1] <- "Date"
-        if(input$vac_option == "Population count"){
+        if(input$vac_option == "Population Count"){
             if (input$vac_dose == "Partially Vaccinated") {
                 vaccines <- mutate(vaccines, dose = numtotal_partially)
             } else if (input$vac_dose == "At Least 1-Dose Vaccinated") {
