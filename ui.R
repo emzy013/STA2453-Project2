@@ -29,6 +29,19 @@ shinyUI(
     ),
     br(),
     
+    h2("Summary of Vaccination status in Canada",  align = "center"),
+    fluidRow(
+      column(3, style = "height: 100px; background-color: #d9f1ff;", align = "center", valueBoxOutput("at_least_one_dose", width = NULL)),
+      column(3, style = "height: 100px; background-color: #e8ffff;", align = "center", valueBoxOutput("total_partially", width = NULL)),
+      column(3, style = "height: 100px; background-color: #d9f1ff;", align = "center", valueBoxOutput("total_fully", width = NULL)),
+      column(3, style = "height: 100px; background-color: #e8ffff;", align = "center", valueBoxOutput("total_additional", width = NULL))
+    ), 
+    
+    fluidRow(
+      style = "height: 20px; background-color: #ededed;"
+    ),
+    br(),
+    
     fluidRow(
       align = "center",
       selectInput(
@@ -53,22 +66,6 @@ shinyUI(
     fluidRow(
       style = "height: 20px; background-color: #ededed;"
     ),
-    br(),
-    h2("Summary of Vaccination status in Canada",  align = "center"),
-    fluidRow(
-      align="center",
-      column(3,valueBoxOutput("at_least_one_dose")),
-      column(3,valueBoxOutput("total_partially")),
-      column(3,valueBoxOutput("total_fully")),
-      column(3,valueBoxOutput("total_additional"))
-    ), 
-    fluidRow(
-      style = "height: 20px; background-color: #ededed;"
-    ),
-    br(),
-    
-    
-    h2("Vaccination status by province",  align = "center"),
     br(),
     
     sidebarLayout(
@@ -162,7 +159,7 @@ shinyUI(
       style = "height: 20px; background-color: #ededed;"
     ),
     br(),
-    h2("Cases by vaccination status",  align = "center"),
+    h2("Cases by Vaccination Status",  align = "center"),
     br(),
     
     fluidRow(
