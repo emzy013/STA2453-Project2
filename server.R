@@ -24,6 +24,8 @@ vaccines <- read.csv(url(vaccines_link_1))
 colnames(vaccines)[1] <- "Date"
 vaccines$prop18plus_atleast1dose[vaccines$prop18plus_atleast1dose == ">=99"] <-
     "99"
+vaccines[vaccines == 0] <- 0.000001
+vaccines$proptotal_fully[vaccines$proptotal_fully == "<0.01"] <- "0.000001"
 
 total_vac <- vaccines %>%
     tail(., n = 14) %>%
@@ -148,7 +150,13 @@ shinyServer(function(session, input, output) {
     #Vaccination Percentages Time Series Chart
     output$vac_percentage <-  renderHighchart({
         if (input$age_group == "Total Population") {
-            temp <- vaccines
+            temp <- vaccines  %>%
+                mutate(
+                    proptotal_atleast1dose = as.numeric(proptotal_atleast1dose),
+                    proptotal_partially = as.numeric(proptotal_partially),
+                    proptotal_fully = as.numeric(proptotal_fully),
+                    proptotal_additional = as.numeric(proptotal_additional)
+                )
         } else if (input$age_group == "Population 18 and older") {
             temp <- vaccines  %>%
                 mutate(
